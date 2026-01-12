@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLOER - YouTube Multi-Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f0f0f0;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        /* App Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header with App Name Animation */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .app-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff, #9d4edd);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 6s ease infinite, pulse 2s ease-in-out infinite alternate;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0c0;
+            margin-bottom: 20px;
+        }
+        
+        /* Disclaimer Screen */
+        #disclaimerScreen {
+            background: rgba(25, 25, 40, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .disclaimer-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .disclaimer-title {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #ffd93d;
+        }
+        
+        .disclaimer-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #c0c0e0;
+        }
+        
+        .vpn-button {
+            display: inline-block;
+            background: linear-gradient(to right, #6bcf7f, #4d96ff);
+            color: white;
+            padding: 16px 32px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 15px 0 30px;
+            box-shadow: 0 5px 15px rgba(77, 150, 255, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .vpn-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(77, 150, 255, 0.6);
+        }
+        
+        .cancel-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: not-allowed;
+            opacity: 0.5;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+        }
+        
+        .cancel-button.enabled {
+            cursor: pointer;
+            opacity: 1;
+            animation: pulseCancel 1s infinite alternate;
+        }
+        
+        @keyframes pulseCancel {
+            from { transform: scale(1); box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3); }
+            to { transform: scale(1.1); box-shadow: 0 5px 15px rgba(255, 107, 107, 0.5); }
+        }
+        
+        /* Main Content Area */
+        #mainContent {
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        /* Input Section */
+        .input-section {
+            background: rgba(30, 30, 50, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #ffd93d;
+        }
+        
+        .link-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            border: 2px solid #4d96ff;
+            background: rgba(20, 20, 35, 0.9);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .link-input:focus {
+            outline: none;
+            border-color: #ffd93d;
+            box-shadow: 0 0 0 3px rgba(255, 217, 61, 0.2);
+        }
+        
+        .number-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .number-btn {
+            background: rgba(40, 40, 70, 0.8);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .number-btn:hover {
+            background: rgba(77, 150, 255, 0.8);
+            transform: translateY(-3px);
+        }
+        
+        .number-btn.active {
+            background: linear-gradient(to right, #ffd93d, #ff9d4d);
+            color: #1a1a2e;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(255, 217, 61, 0.4);
+        }
+        
+        .custom-input {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .custom-input label {
+            font-size: 1.2rem;
+            color: #a0a0c0;
+        }
+        
+        .custom-number {
+            width: 100px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #6bcf7f;
+            background: rgba(20, 20, 35, 0.9);
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .load-btn {
+            background: linear-gradient(to right, #9d4edd, #4d96ff);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.3rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(157, 78, 221, 0.4);
+        }
+        
+        .load-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(157, 78, 221, 0.6);
+        }
+        
+        /* Video Grid */
+        .grid-section {
+            margin-bottom: 30px;
+        }
+        
+        .grid-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffd93d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+        
+        .video-card {
+            background: rgba(30, 30, 50, 0.9);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .video-container {
+            width: 100%;
+            height: 250px;
+            background: #000;
+        }
+        
+        @media (max-width: 768px) {
+            .video-container {
+                height: 120px;
+            }
+        }
+        
+        .video-id {
+            padding: 12px 15px;
+            font-size: 0.9rem;
+            color: #a0a0c0;
+            background: rgba(20, 20, 35, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Control Buttons */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            z-index: 100;
+        }
+        
+        .control-btn {
+            background: linear-gradient(to right, #4d96ff, #6bcf7f);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .pause-btn {
+            background: linear-gradient(to right, #ff9d4d, #ff6b6b);
+        }
+        
+        /* Plus Button */
+        .plus-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(to right, #9d4edd, #ff6b6b);
+            color: white;
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            font-size: 2.5rem;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 8px 20px rgba(157, 78, 221, 0.5);
+            transition: all 0.3s;
+            display: none;
+        }
+        
+        .plus-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 25px rgba(157, 78, 221, 0.7);
+        }
+        
+        /* Timer Display */
+        .timer-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 30, 50, 0.9);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: #ffd93d;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 100;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a0a0c0;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .app-title {
+                font-size: 2.5rem;
+            }
+            
+            .disclaimer-title {
+                font-size: 1.8rem;
+            }
+            
+            .disclaimer-text {
+                font-size: 1rem;
+            }
+            
+            .vpn-button {
+                padding: 14px 28px;
+                font-size: 1.1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                padding: 0 20px;
+            }
+            
+            .control-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .plus-btn {
+                bottom: 150px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Animated App Name -->
+        <header class="header">
+            <h1 class="app-title">FLOER</h1>
+            <p class="subtitle">Multi-YouTube Player Control Center</p>
+        </header>
+        
+        <!-- Disclaimer Screen -->
+        <section id="disclaimerScreen">
+            <div class="disclaimer-icon">⚠️</div>
+            <h2 class="disclaimer-title">Disclaimer & Safety Notice</h2>
+            <p class="disclaimer-text">
+                This app allows you to play multiple YouTube videos simultaneously. 
+                Please ensure you have the necessary permissions to access and play the content. 
+                Use a VPN for enhanced privacy and security when browsing online content.
+            </p>
+            
+            <a href="https://play.google.com/store/apps/details?id=com.browsec.vpn" 
+               target="_blank" 
+               class="vpn-button">
+                <i class="fas fa-shield-alt"></i> Connect VPN
+            </a>
+            
+            <p class="disclaimer-text" style="font-size: 1rem; margin-top: 20px;">
+                <i class="fas fa-info-circle"></i> The cancel button will be enabled in <span id="countdown">5</span> seconds
+            </p>
+            
+            <button id="cancelButton" class="cancel-button">
+                <i class="fas fa-times"></i>
+            </button>
+        </section>
+        
+        <!-- Main Content (Hidden Initially) -->
+        <main id="mainContent">
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="input-group">
+                    <label for="youtubeLink" class="input-label">
+                        <i class="fas fa-video"></i> Paste your YouTube link 🎥
+                    </label>
+                    <input type="text" 
+                           id="youtubeLink" 
+                           class="link-input" 
+                           placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">
+                        <i class="fas fa-th-large"></i> Select number of players
+                    </label>
+                    <div class="number-buttons" id="numberButtons">
+                        <!-- Preset number buttons will be generated by JS -->
+                    </div>
+                    
+                    <div class="custom-input">
+                        <label for="customNumber">Custom number:</label>
+                        <input type="number" 
+                               id="customNumber" 
+                               class="custom-number" 
+                               min="1" 
+                               max="50" 
+                               value="5">
+                    </div>
+                </div>
+                
+                <button id="loadPlayersBtn" class="load-btn">
+                    <i class="fas fa-play-circle"></i> Load Players
+                </button>
+            </section>
+            
+            <!-- Video Grid Section -->
+            <section class="grid-section">
+                <h2 class="grid-title">
+                    <i class="fas fa-film"></i> Video Players
+                    <span id="playerCount" style="font-size: 1.2rem; color: #6bcf7f;">(0 loaded)</span>
+                </h2>
+                <div id="videoGrid" class="video-grid">
+                    <!-- Video players will be loaded here -->
+                </div>
+            </section>
+            
+            <!-- Timer Display -->
+            <div id="timerDisplay" class="timer-display">
+                Next auto-pause in: <span id="timerValue">60</span>s
+            </div>
+            
+            <!-- Plus Button -->
+            <button id="plusButton" class="plus-btn">
+                <i class="fas fa-plus"></i>
+            </button>
+            
+            <!-- Footer -->
+            <footer class="footer">
+                <p>FLOER YouTube Multi-Player Control App | Made with Vanilla JS</p>
+                <p>All videos are embedded via YouTube IFrame API</p>
+            </footer>
+        </main>
+    </div>
+    
+    <!-- Global Control Buttons -->
+    <div class="controls">
+        <button id="playAllBtn" class="control-btn">
+            <i class="fas fa-play"></i> Play All ▶️
+        </button>
+        <button id="pauseAllBtn" class="control-btn pause-btn">
+            <i class="fas fa-pause"></i> Pause All ⏸️
+        </button>
+    </div>
+
+    <!-- YouTube IFrame API -->
+    <script>
+        // Global variables
+        let players = []; // Array to store all YouTube player instances
+        let currentVideoId = ""; // Currently loaded video ID
+        let playerCount = 0; // Number of players loaded
+        let autoPauseTimer = null; // Timer for auto-pause feature
+        let pauseCycleTimer = null; // Timer for pause-resume cycle
+        let timeLeft = 60; // Time left until auto-pause
+        
+        // Load YouTube IFrame API
+        let tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        let firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        // YouTube API ready callback
+        function onYouTubeIframeAPIReady() {
+            console.log("YouTube IFrame API ready");
+            // Players will be initialized when loaded
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize disclaimer countdown
+            startDisclaimerCountdown();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Generate preset number buttons
+            generateNumberButtons();
+        });
+        
+        // Start the disclaimer countdown timer
+        function startDisclaimerCountdown() {
+            let countdownElement = document.getElementById('countdown');
+            let cancelButton = document.getElementById('cancelButton');
+            let secondsLeft = 5;
+            
+            let countdownInterval = setInterval(function() {
+                secondsLeft--;
+                countdownElement.textContent = secondsLeft;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    cancelButton.classList.add('enabled');
+                    cancelButton.title = "Click to continue";
+                    cancelButton.addEventListener('click', function() {
+                        document.getElementById('disclaimerScreen').style.display = 'none';
+                        document.getElementById('mainContent').style.display = 'block';
+                        document.getElementById('timerDisplay').style.display = 'block';
+                    });
+                }
+            }, 1000);
+        }
+        
+        // Generate preset number buttons
+        function generateNumberButtons() {
+            const presetNumbers = [5, 10, 15, 20, 25, 30, 35, 40];
+            const container = document.getElementById('numberButtons');
+            
+            presetNumbers.forEach(number => {
+                const button = document.createElement('button');
+                button.className = 'number-btn';
+                button.textContent = number;
+                button.dataset.number = number;
+                
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.number-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Update custom number input
+                    document.getElementById('customNumber').value = number;
+                });
+                
+                container.appendChild(button);
+            });
+            
+            // Set first button as active by default
+            document.querySelector('.number-btn').classList.add('active');
+        }
+        
+        // Set up all event listeners
+        function setupEventListeners() {
+            // Load players button
+            document.getElementById('loadPlayersBtn').addEventListener('click', loadPlayers);
+            
+            // Custom number input
+            document.getElementById('customNumber').addEventListener('change', function() {
+                // Remove active class from all preset buttons
+                document.querySelectorAll('.number-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            });
+            
+            // Play all button
+            document.getElementById('playAllBtn').addEventListener('click', playAllVideos);
+            
+            // Pause all button
+            document.getElementById('pauseAllBtn').addEventListener('click', pauseAllVideos);
+            
+            // Plus button to add one more player
+            document.getElementById('plusButton').addEventListener('click', addOneMorePlayer);
+        }
+        
+        // Extract YouTube video ID from URL
+        function extractVideoId(url) {
+            // Handle various YouTube URL formats
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            
+            if (match && match[2].length === 11) {
+                return match[2];
+            } else {
+                // Try to extract from shortened youtu.be URLs
+                const urlObj = new URL(url);
+                if (urlObj.hostname === 'youtu.be') {
+                    return urlObj.pathname.substring(1);
+                }
+            }
+            
+            return null;
+        }
+        
+        // Load players based on user input
+        function loadPlayers() {
+            const youtubeLink = document.getElementById('youtubeLink').value.trim();
+            const videoId = extractVideoId(youtubeLink);
+            
+            if (!videoId) {
+                alert("Please enter a valid YouTube URL!");
+                return;
+            }
+            
+            // Get the number of players to load
+            let playerNumber = parseInt(document.getElementById('customNumber').value);
+            if (isNaN(playerNumber) || playerNumber < 1) {
+                playerNumber = 5;
+                document.getElementById('customNumber').value = 5;
+            }
+            
+            // Limit max players to prevent performance issues
+            if (playerNumber > 50) {
+                playerNumber = 50;
+                document.getElementById('customNumber').value = 50;
+            }
+            
+            // Store current video ID
+            currentVideoId = videoId;
+            
+            // Clear existing players
+            clearPlayers();
+            
+            // Load new players
+            for (let i = 0; i < playerNumber; i++) {
+                createPlayer(videoId, i);
+            }
+            
+            // Update player count
+            playerCount = playerNumber;
+            updatePlayerCount();
+            
+            // Show plus button
+            document.getElementById('plusButton').style.display = 'block';
+            
+            // Start auto-pause cycle
+            startAutoPauseCycle();
+        }
+        
+        // Create a YouTube player instance
+        function createPlayer(videoId, index) {
+            const videoGrid = document.getElementById('videoGrid');
+            
+            // Create video card container
+            const videoCard = document.createElement('div');
+            videoCard.className = 'video-card';
+            videoCard.id = `videoCard-${index}`;
+            
+            // Create player container
+            const playerContainer = document.createElement('div');
+            playerContainer.id = `player-${index}`;
+            playerContainer.className = 'video-container';
+            
+            // Create video ID display
+            const videoIdDisplay = document.createElement('div');
+            videoIdDisplay.className = 'video-id';
+            videoIdDisplay.textContent = `Player ${index + 1} | Video ID: ${videoId}`;
+            
+            // Assemble the card
+            videoCard.appendChild(playerContainer);
+            videoCard.appendChild(videoIdDisplay);
+            videoGrid.appendChild(videoCard);
+            
+            // Initialize YouTube player
+            new YT.Player(playerContainer.id, {
+                height: '100%',
+                width: '100%',
+                videoId: videoId,
+                playerVars: {
+                    'enablejsapi': 1,
+                    'autoplay': 0,
+                    'modestbranding': 1,
+                    'rel': 0
+                },
+                events: {
+                    'onReady': function(event) {
+                        players[index] = event.target;
+                        console.log(`Player ${index} ready`);
+                    },
+                    'onStateChange': function(event) {
+                        // You can add custom behavior on state change if needed
+                    }
+                }
+            });
+        }
+        
+        // Clear all existing players
+        function clearPlayers() {
+            const videoGrid = document.getElementById('videoGrid');
+            videoGrid.innerHTML = '';
+            players = [];
+            playerCount = 0;
+            updatePlayerCount();
+            
+            // Clear timers
+            if (autoPauseTimer) clearTimeout(autoPauseTimer);
+            if (pauseCycleTimer) clearTimeout(pauseCycleTimer);
+        }
+        
+        // Update player count display
+        function updatePlayerCount() {
+            document.getElementById('playerCount').textContent = `(${playerCount} loaded)`;
+        }
+        
+        // Play all videos
+        function playAllVideos() {
+            let playedCount = 0;
+            
+            players.forEach((player, index) => {
+                if (player && typeof player.playVideo === 'function') {
+                    try {
+                        player.playVideo();
+                        playedCount++;
+                    } catch (error) {
+                        console.error(`Error playing player ${index}:`, error);
+                    }
+                }
+            });
+            
+            if (playedCount > 0) {
+                console.log(`Started playing ${playedCount} videos`);
+            }
+        }
+        
+        // Pause all videos
+        function pauseAllVideos() {
+            let pausedCount = 0;
+            
+            players.forEach((player, index) => {
+                if (player && typeof player.pauseVideo === 'function') {
+                    try {
+                        player.pauseVideo();
+                        pausedCount++;
+                    } catch (error) {
+                        console.error(`Error pausing player ${index}:`, error);
+                    }
+                }
+            });
+            
+            if (pausedCount > 0) {
+                console.log(`Paused ${pausedCount} videos`);
+            }
+        }
+        
+        // Add one more player with the same link
+        function addOneMorePlayer() {
+            if (!currentVideoId) {
+                alert("Please load players first!");
+                return;
+            }
+            
+            // Create new player
+            createPlayer(currentVideoId, playerCount);
+            
+            // Update player count
+            playerCount++;
+            updatePlayerCount();
+        }
+        
+        // Start auto-pause cycle (pause after 60s, resume after 3s)
+        function startAutoPauseCycle() {
+            // Clear existing timers
+            if (autoPauseTimer) clearTimeout(autoPauseTimer);
+            if (pauseCycleTimer) clearTimeout(pauseCycleTimer);
+            
+            // Reset timer display
+            timeLeft = 60;
+            updateTimerDisplay();
+            
+            // Start countdown to auto-pause
+            autoPauseTimer = setInterval(function() {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(autoPauseTimer);
+                    
+                    // Pause all videos
+                    pauseAllVideos();
+                    
+                    // Update timer display for resume countdown
+                    timeLeft = 3;
+                    updateTimerDisplay("Resuming in: ");
+                    
+                    // Set timeout to resume after 3 seconds
+                    pauseCycleTimer = setTimeout(function() {
+                        // Resume all videos
+                        playAllVideos();
+                        
+                        // Restart the cycle
+                        startAutoPauseCycle();
+                    }, 3000);
+                }
+            }, 1000);
+        }
+        
+        // Update the timer display
+        function updateTimerDisplay(prefix = "Next auto-pause in: ") {
+            const timerValue = document.getElementById('timerValue');
+            const timerDisplay = document.getElementById('timerDisplay');
+            
+            if (timerValue) {
+                timerValue.textContent = timeLeft;
+                timerDisplay.querySelector('span:first-child').textContent = prefix;
+            }
+        }
+    </script>
+</body>
+</html>
