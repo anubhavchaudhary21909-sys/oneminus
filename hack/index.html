@@ -3,237 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLOER - YouTube Multi-Player</title>
+    <title>Multi-Player System</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: #1a1a2e;
+            background: #0a1929;
             color: white;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1800px;
             margin: 0 auto;
+        }
+        
+        /* VPN Warning */
+        #vpnWarning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .vpn-box {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 40px;
+            border-radius: 15px;
+            border: 3px solid #ef4444;
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        .vpn-icon {
+            font-size: 60px;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+        
+        .vpn-title {
+            color: #ef4444;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .vpn-text {
+            color: #cbd5e1;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .vpn-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .vpn-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .vpn-btn.connect {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .vpn-btn.ignore {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+        
+        .vpn-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
         /* Header */
         .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: linear-gradient(90deg, #ff6b6b, #4d96ff);
+            background: rgba(30, 41, 59, 0.8);
             border-radius: 10px;
-        }
-        
-        .app-title {
-            font-size: 3.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            animation: glow 2s infinite alternate;
-        }
-        
-        @keyframes glow {
-            from { text-shadow: 0 0 10px #ff6b6b; }
-            to { text-shadow: 0 0 20px #4d96ff; }
-        }
-        
-        /* Disclaimer */
-        #disclaimerScreen {
-            background: #2d2d44;
-            border-radius: 10px;
-            padding: 30px;
-            max-width: 600px;
-            margin: 20px auto;
-            text-align: center;
-            border: 2px solid #ff6b6b;
-        }
-        
-        .cancel-button {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 5px;
-            cursor: not-allowed;
-            opacity: 0.5;
-            margin-top: 20px;
-            font-size: 16px;
-        }
-        
-        .cancel-button.enabled {
-            cursor: pointer;
-            opacity: 1;
-            animation: pulse 1s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        /* Main Content */
-        #mainContent {
-            display: none;
-        }
-        
-        /* Input Section */
-        .input-section {
-            background: #2d2d44;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border: 2px solid #4d96ff;
-        }
-        
-        .input-group {
-            margin: 15px 0;
-        }
-        
-        .input-label {
-            display: block;
-            color: #ffd93d;
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-        
-        .link-input {
-            width: 100%;
-            padding: 12px;
-            background: #1a1a2e;
-            border: 2px solid #6bcf7f;
-            color: white;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        .mute-notice {
-            background: rgba(255, 107, 107, 0.2);
-            border: 1px solid #ff6b6b;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 10px 0;
-            color: #ffd93d;
-            font-size: 14px;
-        }
-        
-        .number-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        
-        .number-btn {
-            background: #3d3d5c;
-            color: white;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s;
-        }
-        
-        .number-btn:hover {
-            background: #4d96ff;
-            transform: translateY(-2px);
-        }
-        
-        .number-btn.active {
-            background: #ffd93d;
-            color: #1a1a2e;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(255, 217, 61, 0.3);
-        }
-        
-        .custom-input {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .custom-number {
-            width: 100px;
-            padding: 10px;
-            background: #1a1a2e;
-            border: 2px solid #9d4edd;
-            color: white;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        .load-btn {
-            background: linear-gradient(to right, #9d4edd, #4d96ff);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-        
-        .load-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(157, 78, 221, 0.4);
-        }
-        
-        /* Video Grid */
-        .grid-header {
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border: 1px solid #3b82f6;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 20px 0;
-            padding: 15px;
-            background: #2d2d44;
-            border-radius: 10px;
         }
         
+        .header-left h1 {
+            font-size: 1.8rem;
+            color: #60a5fa;
+            margin-bottom: 5px;
+        }
+        
+        .header-left p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #60a5fa;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+        
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 15px;
+            margin-bottom: 80px;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Video Section */
+        .video-section {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #475569;
+        }
+        
+        /* YouTube Input */
+        .youtube-input {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #3b82f6;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-label {
+            color: #60a5fa;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #475569;
+            color: white;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+        
+        /* Control Buttons */
+        .control-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .control-btn {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border: 1px solid #3b82f6;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+        
+        .control-btn.active {
+            background: linear-gradient(45deg, #3b82f6, #2563eb);
+            color: white;
+        }
+        
+        /* Video Grid */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 120px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
         }
         
         @media (max-width: 768px) {
             .video-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                grid-template-columns: 1fr;
             }
         }
         
         .video-card {
-            background: #2d2d44;
-            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 8px;
             overflow: hidden;
-            border: 2px solid #3d3d5c;
+            border: 1px solid #475569;
             transition: all 0.3s;
         }
         
         .video-card:hover {
-            transform: translateY(-5px);
-            border-color: #4d96ff;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+            border-color: #3b82f6;
+        }
+        
+        .player-header {
+            background: rgba(30, 41, 59, 0.9);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-id {
+            color: #60a5fa;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .player-email {
+            color: #94a3b8;
+            font-size: 12px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .video-container {
             width: 100%;
-            height: 200px;
-            background: black;
-            position: relative;
+            height: 160px;
+            background: #000;
         }
         
         .video-iframe {
@@ -242,418 +293,662 @@
             border: none;
         }
         
-        .video-info {
-            padding: 15px;
-            background: #1a1a2e;
-        }
-        
-        .video-title {
-            color: #ffd93d;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-        
-        .mute-badge {
-            display: inline-block;
-            background: #ff6b6b;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        
-        /* Controls */
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            right: 0;
+        .player-controls {
+            padding: 10px 15px;
+            background: rgba(30, 41, 59, 0.9);
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 0 20px;
-            z-index: 100;
+            gap: 8px;
         }
         
-        .control-btn {
-            background: linear-gradient(to right, #4d96ff, #6bcf7f);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 8px;
+        .player-btn {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border: 1px solid #475569;
+            padding: 5px 10px;
+            border-radius: 4px;
             cursor: pointer;
-            min-width: 180px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .player-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Temp Mail Panel */
+        .temp-mail-panel {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #10b981;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #475569;
+        }
+        
+        .panel-title {
+            color: #60a5fa;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .close-panel {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        
+        /* Email Controls */
+        .email-controls {
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
-            transition: all 0.3s;
+            margin-bottom: 15px;
         }
         
-        .control-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .pause-btn {
-            background: linear-gradient(to right, #ff9d4d, #ff6b6b);
-        }
-        
-        /* Plus Button */
-        .plus-btn {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            background: linear-gradient(45deg, #9d4edd, #ff6b6b);
+        .email-btn {
+            background: linear-gradient(45deg, #10b981, #059669);
             color: white;
             border: none;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            font-size: 35px;
+            padding: 8px 15px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 13px;
+            flex: 1;
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .email-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .email-btn.red {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+        }
+        
+        /* Email List */
+        .email-list {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 6px;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        
+        .email-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 4px;
+            border-left: 3px solid #10b981;
+        }
+        
+        .email-address {
+            color: #60a5fa;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+        }
+        
+        .email-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        
+        /* Bottom Controls */
+        .bottom-controls {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(30, 41, 59, 0.95);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #3b82f6;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
             z-index: 100;
-            display: none;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
         
-        .plus-btn:hover {
-            transform: scale(1.1) rotate(90deg);
+        .bottom-btn {
+            background: linear-gradient(45deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
-        /* Timer */
-        .timer-display {
+        .bottom-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .bottom-btn.red {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+        }
+        
+        /* Toggle Button */
+        .toggle-btn {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 101;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .toggle-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 10px;
+            border-radius: 6px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        
+        .progress-container {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.9);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        /* VPN Indicator */
+        .vpn-indicator {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(45, 45, 68, 0.9);
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: 2px solid #ffd93d;
-            display: none;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #10b981;
             z-index: 100;
         }
         
         /* Loading */
         .loading {
-            text-align: center;
-            padding: 20px;
-            color: #ffd93d;
-            font-size: 18px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 41, 59, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #3b82f6;
             display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 2000;
         }
         
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4d96ff;
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #475569;
+            border-top-color: #3b82f6;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-right: 10px;
         }
         
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
         
-        /* Status Message */
-        .status-message {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: rgba(107, 207, 127, 0.9);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            display: none;
-            z-index: 100;
-            animation: slideIn 0.5s ease;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        /* Mobile Responsive */
+        /* Responsive */
         @media (max-width: 768px) {
-            .app-title {
-                font-size: 2.5rem;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-                bottom: 10px;
-            }
-            
-            .control-btn {
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            .plus-btn {
-                bottom: 160px;
-                right: 10px;
-                width: 60px;
-                height: 60px;
-                font-size: 30px;
-            }
-            
-            .video-grid {
+            .main-layout {
                 grid-template-columns: 1fr;
+            }
+            
+            .temp-mail-panel {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100%;
+                max-width: 400px;
+                height: 100vh;
+                z-index: 99;
+                transition: right 0.3s;
+            }
+            
+            .temp-mail-panel.active {
+                right: 0;
+            }
+            
+            .bottom-controls {
+                flex-wrap: wrap;
+            }
+            
+            .bottom-btn {
+                min-width: 120px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <h1 class="app-title">FLOER</h1>
-            <p>YouTube Multi-Player Control</p>
-        </header>
-        
-        <!-- Disclaimer Screen -->
-        <section id="disclaimerScreen">
-            <div style="font-size: 50px; margin-bottom: 20px;">⚠️</div>
-            <h2 style="color: #ffd93d; margin-bottom: 15px;">Disclaimer</h2>
-            <p style="margin-bottom: 15px; color: #c0c0e0;">This app loads multiple YouTube videos simultaneously.</p>
-            <p style="margin-bottom: 20px; color: #c0c0e0;">All videos are <strong style="color: #ff6b6b;">MUTED by default</strong> to avoid audio conflicts.</p>
-            
-            <a href="https://play.google.com/store/apps/details?id=com.browsec.vpn" 
-               target="_blank" 
-               style="background: linear-gradient(to right, #6bcf7f, #4d96ff); 
-                      color: white; 
-                      padding: 12px 24px; 
-                      border-radius: 5px; 
-                      text-decoration: none;
-                      display: inline-block;
-                      margin: 15px 0;">
-                🔒 Connect VPN
-            </a>
-            
-            <p style="margin: 20px 0; color: #ffd93d;">
-                Continue in <span id="countdown" style="font-weight: bold;">5</span> seconds
+    <!-- VPN Warning Screen -->
+    <div id="vpnWarning" style="display: block;">
+        <div class="vpn-box">
+            <div class="vpn-icon">🔒</div>
+            <h2 class="vpn-title">VPN REQUIRED</h2>
+            <p class="vpn-text">
+                This application requires a VPN connection to function properly.
+                <br><br>
+                All videos are <strong>MUTED BY DEFAULT</strong> to prevent audio conflicts and for privacy reasons.
+                <br><br>
+                Using a VPN helps protect your privacy and allows the system to work correctly.
             </p>
             
-            <button id="cancelButton" class="cancel-button">
-                ❌ Continue to App
-            </button>
-        </section>
-        
-        <!-- Main Content -->
-        <main id="mainContent">
-            <!-- Input Section -->
-            <section class="input-section">
-                <div class="input-group">
-                    <label class="input-label">🎥 Paste YouTube Link</label>
-                    <input type="text" 
-                           id="youtubeLink" 
-                           class="link-input" 
-                           placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-                           value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-                    <div class="mute-notice">
-                        🔇 Note: All videos load MUTED by default to prevent audio overlap
-                    </div>
-                </div>
-                
-                <div class="input-group">
-                    <label class="input-label">🔢 Number of Players</label>
-                    <div class="number-buttons" id="numberButtons">
-                        <!-- Generated by JavaScript -->
-                    </div>
-                    
-                    <div class="custom-input">
-                        <span style="color: #a0a0c0;">Custom:</span>
-                        <input type="number" 
-                               id="customNumber" 
-                               class="custom-number" 
-                               min="1" 
-                               max="50" 
-                               value="5">
-                    </div>
-                </div>
-                
-                <button id="loadPlayersBtn" class="load-btn">
-                    ▶️ Load Muted Players
+            <div class="vpn-buttons">
+                <button class="vpn-btn connect" onclick="connectVPN()">
+                    🔗 Connect VPN
                 </button>
-                
-                <div id="loading" class="loading">
-                    <div class="loading-spinner"></div>
-                    Loading muted players...
+                <button class="vpn-btn ignore" onclick="ignoreVPN()">
+                    ⚠️ Continue Anyway
+                </button>
+            </div>
+            
+            <div style="margin-top: 25px; color: #94a3b8; font-size: 13px;">
+                <div>Recommended VPN Services:</div>
+                <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap;">
+                    <a href="https://www.expressvpn.com/" target="_blank" style="color: #3b82f6; text-decoration: none;">ExpressVPN</a>
+                    <a href="https://nordvpn.com/" target="_blank" style="color: #3b82f6; text-decoration: none;">NordVPN</a>
+                    <a href="https://surfshark.com/" target="_blank" style="color: #3b82f6; text-decoration: none;">Surfshark</a>
+                    <a href="https://protonvpn.com/" target="_blank" style="color: #3b82f6; text-decoration: none;">ProtonVPN</a>
                 </div>
-            </section>
-            
-            <!-- Video Grid Header -->
-            <div class="grid-header">
-                <h3 style="color: #ffd93d;">🎬 Video Players (All Muted)</h3>
-                <div style="color: #6bcf7f; font-size: 18px;">
-                    Players: <span id="playerCount">0</span>
-                </div>
             </div>
-            
-            <!-- Video Grid -->
-            <div id="videoGrid" class="video-grid">
-                <!-- Players will be added here -->
-            </div>
-            
-            <!-- Timer Display -->
-            <div id="timerDisplay" class="timer-display">
-                ⏱️ Next auto-pause: <span id="timerValue" style="font-weight: bold;">60</span>s
-            </div>
-            
-            <!-- Plus Button -->
-            <button id="plusButton" class="plus-btn" title="Add one more player">
-                ➕
-            </button>
-            
-            <!-- Status Message -->
-            <div id="statusMessage" class="status-message"></div>
-        </main>
+        </div>
     </div>
     
-    <!-- Control Buttons -->
-    <div class="controls">
-        <button id="playAllBtn" class="control-btn">
-            ▶️ Play All (Muted)
-        </button>
-        <button id="pauseAllBtn" class="control-btn pause-btn">
-            ⏸️ Pause All
-        </button>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>Multi-Player System</h1>
+                <p>VPN Required | All Videos Muted by Default</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat">
+                    <div class="stat-value" id="playerCount">0</div>
+                    <div class="stat-label">Players</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="viewCount">0</div>
+                    <div class="stat-label">Views</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="emailCount">0</div>
+                    <div class="stat-label">Emails</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- VPN Indicator -->
+        <div class="vpn-indicator" id="vpnIndicator" style="display: none;">
+            <span>🔒 VPN Connected</span>
+        </div>
+        
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Video Section -->
+            <div class="video-section">
+                <!-- YouTube Input -->
+                <div class="youtube-input">
+                    <h3 style="color: #60a5fa; margin-bottom: 15px; font-size: 16px;">🎬 YouTube Video URL</h3>
+                    <div class="input-group">
+                        <input type="text" 
+                               id="youtubeLink" 
+                               class="input-field" 
+                               placeholder="Paste YouTube video link here..."
+                               value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" 
+                               id="playerCountInput" 
+                               class="input-field" 
+                               placeholder="Players count"
+                               value="5"
+                               min="1"
+                               max="50"
+                               style="width: 120px;">
+                        <button class="control-btn" onclick="loadVideo()" style="flex: 1;">
+                            ▶ Load Video
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Control Buttons -->
+                <div class="control-buttons">
+                    <button class="control-btn" onclick="playAll()">
+                        ▶ Play All
+                    </button>
+                    <button class="control-btn" onclick="pauseAll()">
+                        ⏸ Pause All
+                    </button>
+                    <button class="control-btn" onclick="startAutoPlay()">
+                        🔄 Auto Play
+                    </button>
+                    <button class="control-btn" onclick="cyclePlayers()">
+                        🎡 Cycle
+                    </button>
+                    <button class="control-btn" onclick="addPlayer()">
+                        ➕ Add Player
+                    </button>
+                    <button class="control-btn" onclick="removePlayer()">
+                        ➖ Remove
+                    </button>
+                    <button class="control-btn" onclick="togglePanel()">
+                        📧 Temp Mail
+                    </button>
+                </div>
+                
+                <!-- Status Bar -->
+                <div class="status-bar">
+                    <div style="color: #94a3b8;">Status:</div>
+                    <div id="statusText" style="color: #60a5fa;">Ready</div>
+                    <div class="progress-container">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div id="progressText" style="color: #94a3b8; min-width: 80px; text-align: right;">0 views</div>
+                </div>
+                
+                <!-- Video Grid -->
+                <div id="videoGrid" class="video-grid">
+                    <!-- Video players will be added here -->
+                </div>
+            </div>
+            
+            <!-- Temp Mail Panel -->
+            <div class="temp-mail-panel" id="tempMailPanel">
+                <div class="panel-header">
+                    <h3 class="panel-title">📧 Temp Mail System</h3>
+                    <button class="close-panel" onclick="togglePanel()">×</button>
+                </div>
+                
+                <!-- Email Controls -->
+                <div class="email-controls">
+                    <button class="email-btn" onclick="generateEmails()">
+                        📧 Generate
+                    </button>
+                    <button class="email-btn" onclick="assignEmails()">
+                        🤖 Assign
+                    </button>
+                    <button class="email-btn red" onclick="clearEmails()">
+                        🗑 Clear
+                    </button>
+                </div>
+                
+                <!-- Email Count -->
+                <div style="margin-bottom: 15px;">
+                    <input type="number" 
+                           id="emailCountInput" 
+                           class="input-field" 
+                           placeholder="Number of emails"
+                           value="10"
+                           min="1"
+                           max="100">
+                </div>
+                
+                <!-- API Key -->
+                <div style="margin-bottom: 15px;">
+                    <div class="input-label">Temp Mail API Key:</div>
+                    <input type="text" 
+                           id="apiKeyInput" 
+                           class="input-field" 
+                           placeholder="Enter API key"
+                           value="sk_yoh0ClLFsbKeCkl4_umA8khJrFeXE0oJKp9i3UrwqtU9Jo0St5pnFGL8TIGBjhM9lsgWT9n0zRrCVBxGr">
+                </div>
+                
+                <!-- Email List -->
+                <div class="email-list" id="emailList">
+                    <div class="email-item">
+                        <div class="email-address">No emails generated yet</div>
+                        <div class="email-meta">
+                            <span>Click Generate</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Email Stats -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="background: rgba(15, 23, 42, 0.9); padding: 10px; border-radius: 6px; text-align: center;">
+                        <div style="color: #60a5fa; font-size: 16px; font-weight: bold;" id="totalEmails">0</div>
+                        <div style="color: #94a3b8; font-size: 12px;">Total Emails</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.9); padding: 10px; border-radius: 6px; text-align: center;">
+                        <div style="color: #10b981; font-size: 16px; font-weight: bold;" id="assignedEmails">0</div>
+                        <div style="color: #94a3b8; font-size: 12px;">Assigned</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Controls -->
+        <div class="bottom-controls">
+            <button class="bottom-btn" onclick="loadDefault()">
+                🚀 Quick Start
+            </button>
+            <button class="bottom-btn" onclick="startAutoPlay()">
+                🔄 Auto Mode
+            </button>
+            <button class="bottom-btn" onclick="stopAll()">
+                ⏹ Stop All
+            </button>
+            <button class="bottom-btn red" onclick="resetSystem()">
+                🔄 Reset
+            </button>
+        </div>
+        
+        <!-- Toggle Button -->
+        <button class="toggle-btn" onclick="togglePanel()" id="toggleBtn">📧</button>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>Loading...</div>
     </div>
 
     <script>
         // Global variables
-        let players = []; // Store player iframes
+        let players = [];
+        let tempEmails = [];
+        let viewCount = 0;
         let currentVideoId = "";
-        let playerCount = 0;
-        let autoPauseTimer = null;
-        let pauseCycleTimer = null;
-        let timeLeft = 60;
+        let isAutoPlaying = false;
+        let isCycling = false;
+        let autoPlayInterval;
+        let cycleInterval;
+        let vpnConnected = false;
+        const API_KEY = "sk_yoh0ClLFsbKeCkl4_umA8khJrFeXE0oJKp9i3UrwqtU9Jo0St5pnFGL8TIGBjhM9lsgWT9n0zRrCVBxGr";
         
-        // Initialize on page load
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("FLOER App Initialized");
-            startDisclaimerCountdown();
-            generateNumberButtons();
-            setupEventListeners();
+            console.log("Multi-Player System Initialized");
+            console.log("All videos are muted by default");
+            
+            // Check if VPN is already connected (simulated)
+            checkVPN();
+            
+            // Generate initial emails
+            generateEmails(5);
         });
         
-        // Start disclaimer countdown
-        function startDisclaimerCountdown() {
-            let countdownElement = document.getElementById('countdown');
-            let cancelButton = document.getElementById('cancelButton');
-            let secondsLeft = 5;
+        // VPN Functions
+        function connectVPN() {
+            showLoading("Connecting to VPN...");
             
-            let countdownInterval = setInterval(function() {
-                secondsLeft--;
-                countdownElement.textContent = secondsLeft;
+            setTimeout(() => {
+                vpnConnected = true;
+                document.getElementById('vpnWarning').style.display = 'none';
+                document.getElementById('vpnIndicator').style.display = 'flex';
+                hideLoading();
+                showStatus("VPN Connected Successfully");
                 
-                if (secondsLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    cancelButton.classList.add('enabled');
-                    cancelButton.addEventListener('click', function() {
-                        document.getElementById('disclaimerScreen').style.display = 'none';
-                        document.getElementById('mainContent').style.display = 'block';
-                        document.getElementById('timerDisplay').style.display = 'block';
-                        showStatus("Welcome to FLOER! All videos are muted by default.");
-                    });
-                }
+                // Auto-load default video
+                setTimeout(() => {
+                    loadDefault();
+                }, 1000);
+            }, 2000);
+        }
+        
+        function ignoreVPN() {
+            vpnConnected = true;
+            document.getElementById('vpnWarning').style.display = 'none';
+            document.getElementById('vpnIndicator').style.display = 'flex';
+            document.getElementById('vpnIndicator').innerHTML = '<span>⚠️ VPN Not Connected</span>';
+            showStatus("Warning: VPN not connected");
+            
+            // Auto-load default video
+            setTimeout(() => {
+                loadDefault();
             }, 1000);
         }
         
-        // Generate number buttons
-        function generateNumberButtons() {
-            const presetNumbers = [5, 10, 15, 20, 25, 30, 35, 40];
-            const container = document.getElementById('numberButtons');
-            
-            presetNumbers.forEach(number => {
-                const button = document.createElement('button');
-                button.className = 'number-btn';
-                button.textContent = number;
-                button.title = `Load ${number} players`;
-                
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    document.querySelectorAll('.number-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked button
-                    this.classList.add('active');
-                    
-                    // Update custom number input
-                    document.getElementById('customNumber').value = number;
-                });
-                
-                container.appendChild(button);
-            });
-            
-            // Set first button as active
-            document.querySelector('.number-btn').classList.add('active');
+        function checkVPN() {
+            // Simulated VPN check
+            // In real implementation, you would check IP location, latency, etc.
+            const hasVPN = Math.random() > 0.5; // 50% chance
+            if (hasVPN) {
+                vpnConnected = true;
+                document.getElementById('vpnWarning').style.display = 'none';
+                document.getElementById('vpnIndicator').style.display = 'flex';
+                showStatus("VPN detected");
+            }
         }
         
-        // Setup event listeners
-        function setupEventListeners() {
-            // Load players button
-            document.getElementById('loadPlayersBtn').addEventListener('click', function() {
-                loadPlayers();
-            });
-            
-            // Play all button
-            document.getElementById('playAllBtn').addEventListener('click', function() {
-                playAllVideos();
-            });
-            
-            // Pause all button
-            document.getElementById('pauseAllBtn').addEventListener('click', function() {
-                pauseAllVideos();
-            });
-            
-            // Plus button
-            document.getElementById('plusButton').addEventListener('click', function() {
-                addOneMorePlayer();
-            });
+        // Show loading
+        function showLoading(text = "Loading...") {
+            const loading = document.getElementById('loading');
+            loading.children[1].textContent = text;
+            loading.style.display = 'flex';
         }
         
-        // Show status message
-        function showStatus(message, duration = 3000) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.textContent = message;
-            statusElement.style.display = 'block';
-            statusElement.style.background = 'rgba(107, 207, 127, 0.9)';
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        // Show status
+        function showStatus(message) {
+            document.getElementById('statusText').textContent = message;
+            
+            // Create temporary status message
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = `
+                position: fixed;
+                top: 60px;
+                right: 20px;
+                background: rgba(30, 41, 59, 0.95);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 6px;
+                border: 1px solid #3b82f6;
+                font-size: 13px;
+                z-index: 1000;
+            `;
+            statusDiv.textContent = message;
+            document.body.appendChild(statusDiv);
             
             setTimeout(() => {
-                statusElement.style.display = 'none';
-            }, duration);
+                statusDiv.remove();
+            }, 3000);
         }
         
-        // Show error message
-        function showError(message, duration = 3000) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.textContent = message;
-            statusElement.style.display = 'block';
-            statusElement.style.background = 'rgba(255, 107, 107, 0.9)';
+        // Toggle panel
+        function togglePanel() {
+            const panel = document.getElementById('tempMailPanel');
+            const btn = document.getElementById('toggleBtn');
             
-            setTimeout(() => {
-                statusElement.style.display = 'none';
-            }, duration);
+            if (window.innerWidth <= 768) {
+                panel.classList.toggle('active');
+                btn.textContent = panel.classList.contains('active') ? '×' : '📧';
+            } else {
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                btn.style.display = 'flex';
+            }
         }
         
-        // Extract video ID from URL
+        // Update stats
+        function updateStats() {
+            document.getElementById('playerCount').textContent = players.length;
+            document.getElementById('viewCount').textContent = viewCount;
+            document.getElementById('emailCount').textContent = tempEmails.length;
+            document.getElementById('totalEmails').textContent = tempEmails.length;
+            document.getElementById('assignedEmails').textContent = tempEmails.filter(e => e.assigned).length;
+            document.getElementById('progressText').textContent = `${viewCount} views`;
+        }
+        
+        // Extract video ID
         function extractVideoId(url) {
-            console.log("Extracting video ID from:", url);
-            
             if (!url) return null;
             
-            // Try different YouTube URL patterns
             const patterns = [
                 /(?:youtube\.com\/watch\?v=)([^&]+)/,
                 /(?:youtu\.be\/)([^?]+)/,
@@ -663,297 +958,494 @@
             for (let pattern of patterns) {
                 const match = url.match(pattern);
                 if (match && match[1]) {
-                    const videoId = match[1].split('&')[0].split('?')[0];
-                    console.log("Found video ID:", videoId);
-                    return videoId;
+                    return match[1].split('&')[0].split('?')[0];
                 }
             }
-            
             return null;
         }
         
-        // Load players
-        function loadPlayers() {
-            const youtubeLink = document.getElementById('youtubeLink').value.trim();
-            console.log("YouTube Link:", youtubeLink);
-            
-            const videoId = extractVideoId(youtubeLink);
-            console.log("Video ID:", videoId);
-            
-            if (!videoId) {
-                showError("❌ Invalid YouTube URL! Please check the link.");
+        // Load video
+        function loadVideo() {
+            if (!vpnConnected) {
+                document.getElementById('vpnWarning').style.display = 'flex';
+                showStatus("VPN required to continue");
                 return;
             }
             
-            // Get player count
-            let playerNumber = parseInt(document.getElementById('customNumber').value) || 5;
-            if (playerNumber < 1) playerNumber = 1;
-            if (playerNumber > 50) {
-                playerNumber = 50;
-                document.getElementById('customNumber').value = 50;
-                showError("Limited to 50 players maximum");
+            const linkInput = document.getElementById('youtubeLink');
+            const countInput = document.getElementById('playerCountInput');
+            
+            const url = linkInput.value.trim();
+            const count = parseInt(countInput.value) || 5;
+            
+            if (!url) {
+                showStatus("Please enter YouTube URL");
+                return;
             }
             
-            // Show loading
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('loadPlayersBtn').disabled = true;
+            const videoId = extractVideoId(url);
+            if (!videoId) {
+                showStatus("Invalid YouTube URL");
+                return;
+            }
             
-            // Store current video ID
+            showLoading("Loading video players...");
             currentVideoId = videoId;
             
             // Clear existing players
             clearPlayers();
             
             // Create players
-            for (let i = 0; i < playerNumber; i++) {
-                createPlayer(videoId, i);
-            }
-            
-            // Update player count
-            playerCount = playerNumber;
-            updatePlayerCount();
-            
-            // Hide loading after delay
             setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('loadPlayersBtn').disabled = false;
+                for (let i = 0; i < count; i++) {
+                    createPlayer(videoId, i);
+                }
                 
-                // Show plus button
-                document.getElementById('plusButton').style.display = 'block';
+                updateStats();
+                hideLoading();
+                showStatus(`Loaded ${count} players (All Muted)`);
                 
-                // Show success message
-                showStatus(`✅ Loaded ${playerNumber} muted players! Click "Play All" to start.`);
-                
-                // Start auto-pause cycle
-                startAutoPauseCycle();
+                // Auto-assign emails
+                setTimeout(assignEmails, 500);
             }, 1000);
         }
         
-        // Create a player (MUTED by default)
+        // Load default
+        function loadDefault() {
+            document.getElementById('youtubeLink').value = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            loadVideo();
+        }
+        
+        // Create player
         function createPlayer(videoId, index) {
-            console.log(`Creating muted player ${index} with video ID: ${videoId}`);
+            const grid = document.getElementById('videoGrid');
             
-            const videoGrid = document.getElementById('videoGrid');
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.id = `player-${index}`;
             
-            // Create video card
-            const videoCard = document.createElement('div');
-            videoCard.className = 'video-card';
-            videoCard.id = `videoCard-${index}`;
+            // Get email
+            let email = 'No email';
+            let emailId = null;
             
-            // Create player container
-            const playerContainer = document.createElement('div');
-            playerContainer.className = 'video-container';
-            playerContainer.id = `playerContainer-${index}`;
+            const availableEmail = tempEmails.find(e => !e.assigned);
+            if (availableEmail) {
+                email = availableEmail.address;
+                emailId = availableEmail.id;
+                availableEmail.assigned = true;
+                availableEmail.assignedTo = index;
+            }
             
-            // Create iframe with MUTED parameter
-            const iframe = document.createElement('iframe');
-            iframe.id = `player-${index}`;
-            iframe.className = 'video-iframe';
+            card.innerHTML = `
+                <div class="player-header">
+                    <div class="player-id">Player ${index + 1}</div>
+                    <div class="player-email" title="${email}">${email}</div>
+                </div>
+                <div class="video-container">
+                    <iframe class="video-iframe"
+                            src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&rel=0&controls=0&showinfo=0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            frameborder="0">
+                    </iframe>
+                </div>
+                <div class="player-controls">
+                    <button onclick="playSingle(${index})" class="player-btn">▶ Play</button>
+                    <button onclick="pauseSingle(${index})" class="player-btn">⏸ Pause</button>
+                    <button onclick="restartSingle(${index})" class="player-btn">↺ Restart</button>
+                    <div style="color: #94a3b8; font-size: 11px; margin-left: auto;">
+                        Views: <span id="views-${index}">0</span>
+                    </div>
+                </div>
+            `;
             
-            // IMPORTANT: Add &mute=1 parameter to mute the video
-            iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&mute=1&rel=0&controls=1&showinfo=0`;
-            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            iframe.allowFullscreen = true;
-            iframe.title = `YouTube Player ${index + 1} (Muted)`;
-            iframe.setAttribute('frameborder', '0');
+            grid.appendChild(card);
             
-            // Create video info
-            const videoInfo = document.createElement('div');
-            videoInfo.className = 'video-info';
-            
-            const videoTitle = document.createElement('div');
-            videoTitle.className = 'video-title';
-            videoTitle.textContent = `Player ${index + 1} | ID: ${videoId.substring(0, 8)}...`;
-            
-            const muteBadge = document.createElement('div');
-            muteBadge.className = 'mute-badge';
-            muteBadge.textContent = '🔇 MUTED';
-            
-            // Assemble everything
-            videoInfo.appendChild(videoTitle);
-            videoInfo.appendChild(muteBadge);
-            
-            playerContainer.appendChild(iframe);
-            videoCard.appendChild(playerContainer);
-            videoCard.appendChild(videoInfo);
-            videoGrid.appendChild(videoCard);
-            
-            // Store player reference
             players[index] = {
-                iframe: iframe,
-                id: `player-${index}`,
-                videoId: videoId
+                element: card,
+                iframe: card.querySelector('iframe'),
+                index: index,
+                videoId: videoId,
+                email: email,
+                emailId: emailId,
+                views: 0,
+                active: false
             };
             
-            console.log(`Player ${index} created successfully (MUTED)`);
+            updateEmailList();
         }
         
-        // Clear all players
+        // Clear players
         function clearPlayers() {
-            const videoGrid = document.getElementById('videoGrid');
-            videoGrid.innerHTML = '';
             players = [];
-            playerCount = 0;
-            updatePlayerCount();
-            
-            // Clear timers
-            if (autoPauseTimer) {
-                clearInterval(autoPauseTimer);
-                autoPauseTimer = null;
-            }
-            if (pauseCycleTimer) {
-                clearTimeout(pauseCycleTimer);
-                pauseCycleTimer = null;
-            }
+            const grid = document.getElementById('videoGrid');
+            grid.innerHTML = '';
+            viewCount = 0;
+            updateStats();
+            stopAll();
         }
         
-        // Update player count
-        function updatePlayerCount() {
-            document.getElementById('playerCount').textContent = playerCount;
-        }
-        
-        // Play all videos (they remain muted)
-        function playAllVideos() {
-            console.log("Playing all muted videos");
+        // Play single
+        window.playSingle = function(index) {
+            const player = players[index];
+            if (!player) return;
             
-            let playedCount = 0;
-            
-            players.forEach((player, index) => {
-                if (player && player.iframe && player.iframe.contentWindow) {
-                    try {
-                        // Send play command via postMessage
-                        player.iframe.contentWindow.postMessage(
-                            JSON.stringify({
-                                event: 'command',
-                                func: 'playVideo',
-                                args: ''
-                            }), 
-                            '*'
-                        );
-                        playedCount++;
-                        console.log(`Player ${index} play command sent`);
-                    } catch (error) {
-                        console.error(`Error playing player ${index}:`, error);
+            const iframe = player.iframe;
+            if (iframe.contentWindow) {
+                try {
+                    iframe.contentWindow.postMessage(JSON.stringify({
+                        event: 'command',
+                        func: 'playVideo',
+                        args: ''
+                    }), '*');
+                    
+                    player.active = true;
+                    player.views++;
+                    viewCount++;
+                    
+                    document.getElementById(`views-${index}`).textContent = player.views;
+                    
+                    // Update email views
+                    if (player.emailId) {
+                        const email = tempEmails.find(e => e.id === player.emailId);
+                        if (email) email.views = (email.views || 0) + 1;
                     }
+                    
+                    updateStats();
+                    updateProgress();
+                } catch (error) {
+                    console.error('Play error:', error);
                 }
-            });
-            
-            if (playedCount > 0) {
-                showStatus(`▶️ Playing ${playedCount} muted videos`);
-            } else {
-                showError("No players loaded yet!");
             }
-        }
+        };
         
-        // Pause all videos
-        function pauseAllVideos() {
-            console.log("Pausing all videos");
+        // Pause single
+        window.pauseSingle = function(index) {
+            const player = players[index];
+            if (!player) return;
             
-            let pausedCount = 0;
-            
-            players.forEach((player, index) => {
-                if (player && player.iframe && player.iframe.contentWindow) {
-                    try {
-                        // Send pause command via postMessage
-                        player.iframe.contentWindow.postMessage(
-                            JSON.stringify({
-                                event: 'command',
-                                func: 'pauseVideo',
-                                args: ''
-                            }), 
-                            '*'
-                        );
-                        pausedCount++;
-                        console.log(`Player ${index} pause command sent`);
-                    } catch (error) {
-                        console.error(`Error pausing player ${index}:`, error);
-                    }
-                }
-            });
-            
-            if (pausedCount > 0) {
-                showStatus(`⏸️ Paused ${pausedCount} videos`);
+            const iframe = player.iframe;
+            if (iframe.contentWindow) {
+                iframe.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: 'pauseVideo',
+                    args: ''
+                }), '*');
+                
+                player.active = false;
+                updateStats();
             }
-        }
+        };
         
-        // Add one more player (also muted)
-        function addOneMorePlayer() {
-            if (!currentVideoId) {
-                showError("Please load players first!");
+        // Restart single
+        window.restartSingle = function(index) {
+            const player = players[index];
+            if (!player) return;
+            
+            const iframe = player.iframe;
+            if (iframe.contentWindow) {
+                iframe.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: 'seekTo',
+                    args: [0, true]
+                }), '*');
+                
+                setTimeout(() => {
+                    playSingle(index);
+                }, 100);
+            }
+        };
+        
+        // Play all
+        function playAll() {
+            if (players.length === 0) {
+                showStatus("No players loaded");
                 return;
             }
             
-            createPlayer(currentVideoId, playerCount);
-            playerCount++;
-            updatePlayerCount();
+            players.forEach((_, index) => {
+                playSingle(index);
+            });
             
-            showStatus(`➕ Added muted player ${playerCount}`);
+            showStatus(`Playing all ${players.length} players`);
         }
         
-        // Start auto-pause cycle
-        function startAutoPauseCycle() {
-            console.log("Starting auto-pause cycle (60s play, 3s pause)");
+        // Pause all
+        function pauseAll() {
+            if (players.length === 0) {
+                showStatus("No players loaded");
+                return;
+            }
             
-            // Clear existing timers
-            if (autoPauseTimer) clearInterval(autoPauseTimer);
-            if (pauseCycleTimer) clearTimeout(pauseCycleTimer);
+            players.forEach((_, index) => {
+                pauseSingle(index);
+            });
             
-            // Reset timer
-            timeLeft = 60;
-            updateTimerDisplay();
+            showStatus("Paused all players");
+        }
+        
+        // Start auto play
+        function startAutoPlay() {
+            if (isAutoPlaying) {
+                stopAutoPlay();
+                return;
+            }
             
-            // Start countdown
-            autoPauseTimer = setInterval(function() {
-                timeLeft--;
-                updateTimerDisplay();
-                
-                if (timeLeft <= 0) {
-                    clearInterval(autoPauseTimer);
-                    
-                    // Auto-pause all videos
-                    pauseAllVideos();
-                    showStatus("⏸️ Auto-paused all videos");
-                    
-                    // Set resume timer
-                    timeLeft = 3;
-                    updateTimerDisplay("Resume in: ");
-                    
-                    pauseCycleTimer = setTimeout(function() {
-                        // Auto-resume all videos
-                        playAllVideos();
-                        showStatus("▶️ Auto-resumed all videos");
-                        
-                        // Restart cycle
-                        startAutoPauseCycle();
-                    }, 3000);
+            if (players.length === 0) {
+                showStatus("Load players first");
+                return;
+            }
+            
+            isAutoPlaying = true;
+            showStatus("Auto play started");
+            
+            autoPlayInterval = setInterval(() => {
+                const count = Math.floor(Math.random() * players.length / 2) + 1;
+                for (let i = 0; i < count; i++) {
+                    const index = Math.floor(Math.random() * players.length);
+                    playSingle(index);
                 }
-            }, 1000);
+                
+                updateProgress();
+            }, 2000);
         }
         
-        // Update timer display
-        function updateTimerDisplay(prefix = "Next auto-pause: ") {
-            const timerValue = document.getElementById('timerValue');
-            if (timerValue) {
-                timerValue.textContent = timeLeft;
-                // Update prefix
-                const timerDisplay = document.getElementById('timerDisplay');
-                const firstChild = timerDisplay.childNodes[0];
-                if (firstChild && firstChild.nodeType === 3) {
-                    firstChild.textContent = prefix;
+        // Stop auto play
+        function stopAutoPlay() {
+            isAutoPlaying = false;
+            clearInterval(autoPlayInterval);
+            showStatus("Auto play stopped");
+        }
+        
+        // Cycle players
+        function cyclePlayers() {
+            if (isCycling) {
+                stopCycle();
+                return;
+            }
+            
+            if (players.length === 0) {
+                showStatus("Load players first");
+                return;
+            }
+            
+            isCycling = true;
+            let current = 0;
+            showStatus("Cycle mode started");
+            
+            cycleInterval = setInterval(() => {
+                pauseAll();
+                
+                setTimeout(() => {
+                    playSingle(current);
+                    current = (current + 1) % players.length;
+                }, 500);
+                
+            }, 3000);
+        }
+        
+        // Stop cycle
+        function stopCycle() {
+            isCycling = false;
+            clearInterval(cycleInterval);
+            showStatus("Cycle mode stopped");
+        }
+        
+        // Add player
+        function addPlayer() {
+            if (!currentVideoId) {
+                showStatus("Load a video first");
+                return;
+            }
+            
+            const index = players.length;
+            createPlayer(currentVideoId, index);
+            updateStats();
+            showStatus(`Added player ${index + 1}`);
+        }
+        
+        // Remove player
+        function removePlayer() {
+            if (players.length === 0) {
+                showStatus("No players to remove");
+                return;
+            }
+            
+            const index = players.length - 1;
+            const player = players.pop();
+            
+            if (player.emailId) {
+                const email = tempEmails.find(e => e.id === player.emailId);
+                if (email) {
+                    email.assigned = false;
+                    email.assignedTo = null;
                 }
             }
+            
+            document.getElementById(`player-${index}`).remove();
+            updateStats();
+            updateEmailList();
+            showStatus(`Removed player ${index + 1}`);
         }
         
-        // Load YouTube IFrame API (not strictly needed for postMessage control)
-        function loadYouTubeAPI() {
-            const tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        // Stop all
+        function stopAll() {
+            stopAutoPlay();
+            stopCycle();
+            pauseAll();
+            document.getElementById('progressFill').style.width = '0%';
+            showStatus("All activities stopped");
         }
         
-        // Load the YouTube API
-        loadYouTubeAPI();
+        // Reset system
+        function resetSystem() {
+            players = [];
+            tempEmails = [];
+            viewCount = 0;
+            
+            document.getElementById('videoGrid').innerHTML = '';
+            document.getElementById('emailList').innerHTML = `
+                <div class="email-item">
+                    <div class="email-address">No emails generated yet</div>
+                    <div class="email-meta">
+                        <span>Click Generate</span>
+                    </div>
+                </div>
+            `;
+            
+            updateStats();
+            stopAll();
+            showStatus("System reset");
+        }
+        
+        // Update progress
+        function updateProgress() {
+            const progress = Math.min(100, Math.floor(viewCount / 2));
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+        
+        // Generate emails
+        function generateEmails(count = null) {
+            if (!count) {
+                count = parseInt(document.getElementById('emailCountInput').value) || 10;
+            }
+            
+            const domains = [
+                'tempmail.com', '10minutemail.net', 'mailinator.com',
+                'guerrillamail.com', 'yopmail.com', 'trashmail.com'
+            ];
+            
+            const prefixes = ['bot', 'user', 'viewer', 'player', 'watch', 'video'];
+            
+            for (let i = 0; i < count; i++) {
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const domain = domains[Math.floor(Math.random() * domains.length)];
+                const numbers = Math.floor(Math.random() * 99999).toString().padStart(5, '0');
+                const email = `${prefix}${numbers}@${domain}`;
+                
+                tempEmails.push({
+                    id: Date.now() + i,
+                    address: email,
+                    assigned: false,
+                    assignedTo: null,
+                    views: 0
+                });
+            }
+            
+            updateEmailList();
+            updateStats();
+            showStatus(`Generated ${count} temp emails`);
+        }
+        
+        // Clear emails
+        function clearEmails() {
+            tempEmails = [];
+            updateEmailList();
+            updateStats();
+            showStatus("Cleared all emails");
+        }
+        
+        // Assign emails
+        function assignEmails() {
+            if (players.length === 0) {
+                showStatus("Load players first");
+                return;
+            }
+            
+            let assigned = 0;
+            const availableEmails = tempEmails.filter(e => !e.assigned);
+            
+            if (availableEmails.length === 0) {
+                showStatus("No available emails");
+                return;
+            }
+            
+            players.forEach((player, index) => {
+                if (availableEmails.length > 0 && !player.emailId) {
+                    const email = availableEmails.shift();
+                    email.assigned = true;
+                    email.assignedTo = index;
+                    
+                    player.email = email.address;
+                    player.emailId = email.id;
+                    
+                    const playerCard = document.getElementById(`player-${index}`);
+                    if (playerCard) {
+                        const emailElement = playerCard.querySelector('.player-email');
+                        if (emailElement) {
+                            emailElement.textContent = email.address;
+                            emailElement.title = email.address;
+                        }
+                    }
+                    
+                    assigned++;
+                }
+            });
+            
+            updateEmailList();
+            updateStats();
+            showStatus(`Assigned ${assigned} emails to players`);
+        }
+        
+        // Update email list
+        function updateEmailList() {
+            const container = document.getElementById('emailList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (tempEmails.length === 0) {
+                container.innerHTML = `
+                    <div class="email-item">
+                        <div class="email-address">No emails generated</div>
+                        <div class="email-meta">
+                            <span>Click Generate</span>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            tempEmails.forEach((email) => {
+                const item = document.createElement('div');
+                item.className = 'email-item';
+                item.innerHTML = `
+                    <div class="email-address">${email.address}</div>
+                    <div class="email-meta">
+                        <span>${email.assigned ? `Player ${email.assignedTo + 1}` : 'Available'}</span>
+                        <span>Views: ${email.views || 0}</span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+        
+        // Initialize
+        setTimeout(() => {
+            if (!vpnConnected) {
+                document.getElementById('vpnWarning').style.display = 'flex';
+            }
+        }, 1000);
     </script>
 </body>
 </html>
