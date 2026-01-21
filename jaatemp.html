@@ -1,0 +1,991 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Temp Number | Anonymous Verification</title>
+    
+    <!-- Font Awesome 6.4.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Font: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-soft: #e0e7ff;
+            --bg-body: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --nav-height: 70px;
+            --header-height: 60px;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animation Classes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--primary-soft);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .splash-logo {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .splash-text {
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 1.5rem;
+            font-weight: 500;
+        }
+
+        /* Auth Screen */
+        #auth-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-body);
+            padding: 2rem;
+            z-index: 900;
+            overflow-y: auto;
+        }
+
+        .auth-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .shield-hero {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
+        }
+
+        .shield-hero i {
+            font-size: 3.5rem;
+            color: white;
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .auth-description {
+            font-size: 1rem;
+            color: var(--text-sub);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), #6366f1);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Main App */
+        #app {
+            display: none;
+            height: 100vh;
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--surface);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Header */
+        .app-header {
+            height: var(--header-height);
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Main View */
+        #main-view {
+            height: calc(100vh - var(--header-height) - var(--nav-height));
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: var(--bg-body);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: var(--surface);
+            display: flex;
+            border-top: 1px solid var(--border);
+            max-width: 500px;
+            margin: 0 auto;
+            left: 50%;
+            transform: translateX(-50%);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-sub);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Home Screen */
+        .status-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .status-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-description {
+            color: var(--text-sub);
+            font-size: 0.875rem;
+        }
+
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .region-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .region-btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .region-flag {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .region-code {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Numbers Screen */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .empty-description {
+            color: var(--text-sub);
+            font-size: 0.875rem;
+            max-width: 250px;
+        }
+
+        .number-card {
+            background: linear-gradient(135deg, var(--surface) 0%, #f8fafc 100%);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .number-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), #818cf8);
+        }
+
+        .number-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .number-flag {
+            font-size: 1.75rem;
+        }
+
+        .number-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .btn-copy {
+            background: var(--primary-soft);
+            color: var(--primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-copy:active {
+            transform: scale(0.98);
+        }
+
+        /* Inbox Screen */
+        .message-card {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+        }
+
+        .message-body {
+            font-size: 0.875rem;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .otp-badge {
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        /* Toast System */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--success);
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .toast-icon {
+            font-size: 1.25rem;
+            color: var(--success);
+        }
+
+        .toast.error .toast-icon {
+            color: var(--danger);
+        }
+
+        .toast-message {
+            font-size: 0.875rem;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            backdrop-filter: blur(5px);
+        }
+
+        .loader-text {
+            margin-top: 1rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="fade-in">
+        <div class="splash-logo">jaaTEMP</div>
+        <div class="spinner"></div>
+        <div class="splash-text">Initializing Secure Link...</div>
+    </div>
+
+    <!-- Auth Screen -->
+    <div id="auth-screen">
+        <div class="auth-container">
+            <div class="shield-hero">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1 class="auth-title">Stay Anonymous</h1>
+            <p class="auth-description">Instantly generate disposable numbers for verification. No SIM card required.</p>
+            <button class="btn-primary" id="start-btn">Start Now</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-title">AR TEMP</div>
+            <div class="header-actions">
+                <i class="fas fa-search"></i>
+                <i class="fas fa-cog"></i>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <div id="main-view"></div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#home" class="nav-item active" data-route="home">
+                <i class="fas fa-home nav-icon"></i>
+                <span>Home</span>
+            </a>
+            <a href="#numbers" class="nav-item" data-route="numbers">
+                <i class="fas fa-phone-alt nav-icon"></i>
+                <span>Numbers</span>
+            </a>
+            <a href="#inbox" class="nav-item" data-route="inbox">
+                <i class="fas fa-inbox nav-icon"></i>
+                <span>Inbox</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Loader Overlay -->
+    <div class="loader-overlay" id="loader-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <div class="loader-text">Allocating Secure Line...</div>
+    </div>
+
+    <script>
+        // App state
+        const appState = {
+            activeNumber: null,
+            messages: [],
+            isLoggedIn: false,
+            regions: [
+                { flag: "🇺🇸", code: "+1" },
+                { flag: "🇬🇧", code: "+44" },
+                { flag: "🇨🇦", code: "+1" },
+                { flag: "🇦🇺", code: "+61" },
+                { flag: "🇩🇪", code: "+49" },
+                { flag: "🇫🇷", code: "+33" },
+                { flag: "🇯🇵", code: "+81" },
+                { flag: "🇸🇬", code: "+65" },
+                { flag: "🇮🇳", code: "+91" },
+                { flag: "🇧🇷", code: "+55" },
+                { flag: "🇿🇦", code: "+27" },
+                { flag: "🇦🇪", code: "+971" }
+            ]
+        };
+
+        // API Configuration
+        const API_KEY = "3393d0fce4mshd259b4f6467fd99p1243b2jsnfa83c3ef6bfa";
+        const API_BASE = "https://temp-numbers-api.p.rapidapi.com";
+
+        // DOM Elements
+        const splashScreen = document.getElementById('splash-screen');
+        const authScreen = document.getElementById('auth-screen');
+        const appContainer = document.getElementById('app');
+        const mainView = document.getElementById('main-view');
+        const startBtn = document.getElementById('start-btn');
+        const loaderOverlay = document.getElementById('loader-overlay');
+        const toastContainer = document.getElementById('toast-container');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        // Initialize app
+        function initApp() {
+            // Check for existing session
+            const savedSession = localStorage.getItem('ar_clean_v4');
+            if (savedSession) {
+                try {
+                    const sessionData = JSON.parse(savedSession);
+                    appState.activeNumber = sessionData.activeNumber;
+                    appState.messages = sessionData.messages || [];
+                    appState.isLoggedIn = sessionData.isLoggedIn || false;
+                } catch (e) {
+                    console.error("Failed to parse saved session:", e);
+                }
+            }
+
+            // Simulate splash screen delay
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    
+                    if (appState.isLoggedIn) {
+                        appContainer.style.display = 'block';
+                        router('home');
+                    } else {
+                        authScreen.style.display = 'block';
+                    }
+                }, 500);
+            }, 2000);
+
+            // Event Listeners
+            startBtn.addEventListener('click', handleLogin);
+            
+            // Navigation click handlers
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const route = this.getAttribute('data-route');
+                    router(route);
+                });
+            });
+
+            // Initial routing
+            window.addEventListener('hashchange', handleHashChange);
+            handleHashChange();
+        }
+
+        // Router System
+        function router(route) {
+            // Update active nav
+            navItems.forEach(item => {
+                if (item.getAttribute('data-route') === route) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Render the appropriate screen
+            switch(route) {
+                case 'home':
+                    renderHomeScreen();
+                    break;
+                case 'numbers':
+                    renderNumbersScreen();
+                    break;
+                case 'inbox':
+                    renderInboxScreen();
+                    break;
+                default:
+                    renderHomeScreen();
+            }
+        }
+
+        function handleHashChange() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                router(hash);
+            }
+        }
+
+        // Render Home Screen
+        function renderHomeScreen() {
+            mainView.innerHTML = `
+                <div class="fade-in">
+                    <div class="status-card">
+                        <div class="status-header">
+                            <div class="status-title">Secure Gateway</div>
+                            <div class="status-indicator">
+                                <div class="online-dot"></div>
+                                <span style="color: var(--success);">ONLINE</span>
+                            </div>
+                        </div>
+                        <div class="status-description">Connection Encrypted (TLS 1.3)</div>
+                    </div>
+                    
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Available Regions</h3>
+                    <div class="region-grid">
+                        ${appState.regions.map(region => `
+                            <div class="region-btn" data-code="${region.code}" data-flag="${region.flag}">
+                                <div class="region-flag">${region.flag}</div>
+                                <div class="region-code">${region.code}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Add click handlers to region buttons
+            document.querySelectorAll('.region-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const code = this.getAttribute('data-code');
+                    const flag = this.getAttribute('data-flag');
+                    generateNumber(code, flag);
+                });
+            });
+        }
+
+        // Render Numbers Screen
+        function renderNumbersScreen() {
+            if (appState.activeNumber) {
+                mainView.innerHTML = `
+                    <div class="fade-in">
+                        <div class="number-card">
+                            <div class="number-header">
+                                <div class="number-flag">${appState.activeNumber.flag}</div>
+                                <div style="color: var(--success); font-weight: 600; font-size: 0.875rem;">
+                                    <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Active
+                                </div>
+                            </div>
+                            <div class="number-value">${appState.activeNumber.number}</div>
+                            <button class="btn-copy" onclick="copyNumber('${appState.activeNumber.number}')">
+                                <i class="fas fa-copy"></i> Copy Number
+                            </button>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; padding: 1rem; background: var(--primary-soft); border-radius: var(--radius-md);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+                                <div style="font-weight: 600; color: var(--text-main);">Number Information</div>
+                            </div>
+                            <div style="font-size: 0.875rem; color: var(--text-sub);">
+                                This temporary number will expire in 24 hours. All incoming messages will appear in the Inbox tab.
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                mainView.innerHTML = `
+                    <div class="fade-in">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-phone-slash"></i>
+                            </div>
+                            <div class="empty-title">No Active Number</div>
+                            <div class="empty-description">
+                                Generate a temporary number by selecting a region from the Home tab.
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Render Inbox Screen
+        function renderInboxScreen() {
+            if (appState.messages.length > 0) {
+                mainView.innerHTML = `
+                    <div class="fade-in">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h3 style="font-size: 1.1rem;">Messages</h3>
+                            <span style="font-size: 0.875rem; color: var(--text-sub);">${appState.messages.length} total</span>
+                        </div>
+                        
+                        ${appState.messages.map(message => `
+                            <div class="message-card">
+                                <div class="message-avatar">${message.sender.charAt(0)}</div>
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <div class="message-sender">${message.sender}</div>
+                                        <div class="message-time">${message.time}</div>
+                                    </div>
+                                    <div class="message-body">${message.body}</div>
+                                    ${message.otp ? `<div class="otp-badge">OTP: ${message.otp}</div>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                mainView.innerHTML = `
+                    <div class="fade-in">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-inbox"></i>
+                            </div>
+                            <div class="empty-title">No Messages</div>
+                            <div class="empty-description">
+                                When you receive SMS to your temporary number, they will appear here.
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Handle Login
+        function handleLogin() {
+            appState.isLoggedIn = true;
+            authScreen.style.display = 'none';
+            appContainer.style.display = 'block';
+            
+            // Add welcome message
+            appState.messages.push({
+                sender: "System",
+                body: "Secure line active. Ready to receive verifications.",
+                time: "Just now"
+            });
+            
+            saveSession();
+            router('home');
+            showToast("Line Activated", "success");
+        }
+
+        // Generate Temporary Number
+        async function generateNumber(code, flag) {
+            showLoader(true);
+            
+            // Simulate API call with delay
+            setTimeout(() => {
+                // In a real app, you would call the actual API
+                // const response = await fetch(`${API_BASE}/generate`, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //         'X-RapidAPI-Key': API_KEY,
+                //         'X-RapidAPI-Host': 'temp-numbers-api.p.rapidapi.com'
+                //     },
+                //     body: JSON.stringify({ regionCode: code })
+                // });
+                
+                // For demo purposes, generate a random number
+                const randomNumber = `${code} ${Math.floor(100 + Math.random() * 900)}-${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000)}`;
+                
+                appState.activeNumber = {
+                    flag: flag,
+                    code: code,
+                    number: randomNumber,
+                    generatedAt: new Date().toISOString()
+                };
+                
+                // Add a simulated OTP message
+                const otpCode = Math.floor(1000 + Math.random() * 9000);
+                appState.messages.push({
+                    sender: "Verification Service",
+                    body: `Your verification code is ${otpCode}. Do not share this code with anyone.`,
+                    time: "1 min ago",
+                    otp: otpCode
+                });
+                
+                saveSession();
+                showLoader(false);
+                router('numbers');
+                showToast("Temporary number generated", "success");
+                
+                // Auto-switch to inbox after 2 seconds to show the new message
+                setTimeout(() => {
+                    router('inbox');
+                }, 2000);
+            }, 1500);
+        }
+
+        // Copy Number to Clipboard
+        function copyNumber(number) {
+            navigator.clipboard.writeText(number).then(() => {
+                showToast("Copied to Clipboard", "success");
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showToast("Failed to copy", "error");
+            });
+        }
+
+        // Show/Hide Loader
+        function showLoader(show) {
+            loaderOverlay.style.display = show ? 'flex' : 'none';
+        }
+
+        // Toast System
+        function showToast(message, type = "success") {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} toast-icon"></i>
+                <div class="toast-message">${message}</div>
+                <i class="fas fa-times" style="color: var(--text-sub); cursor: pointer;"></i>
+            `;
+            
+            // Add close button handler
+            toast.querySelector('.fa-times').addEventListener('click', () => {
+                toast.remove();
+            });
+            
+            toastContainer.appendChild(toast);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 3000);
+        }
+
+        // Save session to localStorage
+        function saveSession() {
+            const sessionData = {
+                activeNumber: appState.activeNumber,
+                messages: appState.messages,
+                isLoggedIn: appState.isLoggedIn,
+                savedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('ar_clean_v4', JSON.stringify(sessionData));
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
